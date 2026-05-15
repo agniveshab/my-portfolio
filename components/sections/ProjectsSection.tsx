@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PROJECTS, type Project } from "@/lib/constants";
+import { PROJECTS, type Project, PERSONAL_INFO } from "@/lib/constants";
 import { ExternalLink, X, ChevronRight, Github } from "lucide-react";
 
 export function ProjectsSection() {
