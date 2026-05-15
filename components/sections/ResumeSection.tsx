@@ -12,7 +12,7 @@ export function ResumeSection() {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="glass-card rounded-3xl p-8 md:p-16 border border-purple-neon/30 max-w-5xl mx-auto shadow-[0_0_100px_rgba(191,90,242,0.15)] relative overflow-hidden group">
-          
+
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-electric/20 to-purple-neon/20 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
 
           <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
@@ -39,13 +39,13 @@ export function ResumeSection() {
               <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
                 Ready for <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-electric to-purple-neon">Opportunities</span>
               </h2>
-              
+
               <p className="text-white/60 text-lg mb-8 leading-relaxed">
                 Download my ATS-friendly resume to view my full academic background, professional experience, and technical skill set in detail. Let's build something amazing together.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mb-8">
-                <a href="/resume.pdf" target="_blank" className="btn-primary w-full sm:w-auto !py-4 px-8 text-lg flex items-center justify-center gap-3 group border-purple-neon hover:border-purple-neon shadow-[0_0_20px_rgba(191,90,242,0.3)]">
+                <a href="https://drive.google.com/file/d/1My0HWDW1wyrRAcAfOn1XVfriW1wRZ5uv/view?usp=sharing" target="_blank" className="btn-primary w-full sm:w-auto !py-4 px-8 text-lg flex items-center justify-center gap-3 group border-purple-neon hover:border-purple-neon shadow-[0_0_20px_rgba(191,90,242,0.3)]">
                   <Download size={20} className="group-hover:-translate-y-1 transition-transform" />
                   Download Resume
                 </a>
