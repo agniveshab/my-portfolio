@@ -64,9 +64,8 @@ export function AboutSection() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(191,90,242,0.15)_0%,transparent_60%)]"></div>
             
             <motion.div 
-              style={{ y: y1 }}
+              style={{ y: y1, borderStyle: 'dashed' }}
               className="absolute top-10 left-10 w-32 h-32 border border-blue-electric/30 rounded-full animate-spin-slow"
-              style={{ borderStyle: 'dashed' }}
             />
             
             <motion.div 
