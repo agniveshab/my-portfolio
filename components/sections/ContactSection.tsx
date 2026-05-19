@@ -1,165 +1,224 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Send, Mail, Github, Instagram } from "lucide-react";
+import { useState, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { PERSONAL_INFO } from "@/lib/constants";
+import { Mail, Github, Send, CheckCircle, Loader2 } from "lucide-react";
+import { CardSpotlight } from "@/components/ui/CardSpotlight";
 
 export function ContactSection() {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [formState, setFormState] = useState<"idle" | "sending" | "sent">(
+    "idle"
+  );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate sending
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-      setFormData({ name: "", email: "", message: "" });
-      
-      setTimeout(() => setSubmitted(false), 5000);
-    }, 1500);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormState("sending");
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setFormState("sent");
+    setFormData({ name: "", email: "", message: "" });
+    setTimeout(() => setFormState("idle"), 3000);
   };
 
   return (
-    <section id="contact" className="py-32 relative section-wrapper">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-electric/5 pointer-events-none"></div>
-      
-      <div className="container mx-auto px-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col items-center mb-20 text-center"
-        >
-          <span className="section-label mb-4">07. // Connect</span>
-          <h2 className="section-title">
-            Let's <span className="gradient-text">Talk</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-electric to-purple-neon mt-6 rounded-full"></div>
-        </motion.div>
-
-        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-          
-          {/* Left Side: Contact Info */}
+    <section
+      id="contact"
+      ref={ref}
+      className="section-wrapper py-32 sm:py-40"
+    >
+      <div className="max-w-5xl mx-auto px-6">
+        {/* Header */}
+        <div className="max-w-2xl mb-16">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
+            className="mb-4"
           >
-            <h3 className="text-3xl font-bold text-white mb-6">Open to opportunities</h3>
-            <p className="text-white/60 text-lg mb-12 leading-relaxed">
-              Whether you have a question, a project idea, or just want to say hi, my inbox is always open. I'll try my best to get back to you!
-            </p>
+            <span className="text-[12px] font-mono font-medium tracking-[0.2em] uppercase text-white/30">
+              Contact
+            </span>
+          </motion.div>
 
-            <div className="space-y-6 mb-12">
-              <a href={`mailto:${PERSONAL_INFO.email}`} className="flex items-center gap-4 text-white/80 hover:text-blue-electric transition-colors group">
-                <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-blue-electric/50 group-hover:bg-blue-electric/10 transition-all">
-                  <Mail size={20} />
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white/90 mb-4 leading-[1.15]"
+          >
+            Let&apos;s connect.
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="text-[16px] text-white/35 font-light leading-relaxed"
+          >
+            Open to collaborations, internships, and exciting opportunities.
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Contact links — stacked cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-4 space-y-3"
+          >
+            <CardSpotlight
+              className="rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.1] transition-all duration-500 cursor-pointer"
+              spotlightColor="rgba(255, 100, 30, 0.06)"
+            >
+              <a
+                href={`mailto:${PERSONAL_INFO.email}`}
+                className="flex items-center gap-4 p-4"
+              >
+                <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/12 flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-4 h-4 text-orange-400/80" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[11px] uppercase tracking-wider text-white/25 mb-0.5 font-medium">
+                    Email
+                  </p>
+                  <p className="text-[13px] text-white/60 truncate">
+                    {PERSONAL_INFO.email}
+                  </p>
+                </div>
+              </a>
+            </CardSpotlight>
+
+            <CardSpotlight
+              className="rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.1] transition-all duration-500 cursor-pointer"
+              spotlightColor="rgba(255, 100, 30, 0.06)"
+            >
+              <a
+                href={PERSONAL_INFO.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 p-4"
+              >
+                <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center flex-shrink-0">
+                  <Github className="w-4 h-4 text-white/45" />
                 </div>
                 <div>
-                  <h4 className="text-xs uppercase tracking-widest text-white/40 mb-1 font-mono">Email</h4>
-                  <p className="font-medium text-lg">{PERSONAL_INFO.email}</p>
+                  <p className="text-[11px] uppercase tracking-wider text-white/25 mb-0.5 font-medium">
+                    GitHub
+                  </p>
+                  <p className="text-[13px] text-white/60">@agniveshab</p>
                 </div>
               </a>
-            </div>
+            </CardSpotlight>
 
-            <div className="flex gap-4">
-              <a href={PERSONAL_INFO.github} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:text-black hover:bg-white transition-all hover:-translate-y-1">
-                <Github size={20} />
+            <CardSpotlight
+              className="rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.1] transition-all duration-500 cursor-pointer"
+              spotlightColor="rgba(255, 100, 30, 0.06)"
+            >
+              <a
+                href={PERSONAL_INFO.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 p-4"
+              >
+                <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/12 flex items-center justify-center flex-shrink-0">
+                  <svg
+                    className="w-4 h-4 text-pink-400/80"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase tracking-wider text-white/25 mb-0.5 font-medium">
+                    Instagram
+                  </p>
+                  <p className="text-[13px] text-white/60">@agniveshab</p>
+                </div>
               </a>
-              <a href={PERSONAL_INFO.instagram} target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:text-white hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-red-500 hover:to-purple-500 hover:border-transparent transition-all hover:-translate-y-1">
-                <Instagram size={20} />
-              </a>
-            </div>
+            </CardSpotlight>
           </motion.div>
 
-          {/* Right Side: Form */}
+          {/* Contact form */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="lg:col-span-8"
           >
-            <form onSubmit={handleSubmit} className="glass-card p-8 rounded-3xl border border-white/10 space-y-6">
-              
-              <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-mono text-white/60 ml-2 uppercase tracking-wider">Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  placeholder="John Doe"
-                  className="input-field"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-mono text-white/60 ml-2 uppercase tracking-wider">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="john@example.com"
-                  className="input-field"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="message" className="text-sm font-mono text-white/60 ml-2 uppercase tracking-wider">Message</label>
+            <CardSpotlight
+              className="rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.1] transition-all duration-500 cursor-default"
+              spotlightColor="rgba(255, 100, 30, 0.04)"
+            >
+              <form onSubmit={handleSubmit} className="p-7 sm:p-8 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    placeholder="Your name"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    required
+                    className="input-field"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Your email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    required
+                    className="input-field"
+                  />
+                </div>
                 <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  placeholder="Hello, I'd like to talk about..."
+                  placeholder="Tell me about your project or idea..."
                   rows={5}
+                  value={formData.message}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
+                  required
                   className="input-field resize-none"
                 />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting || submitted}
-                className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
-                  submitted 
-                    ? "bg-green-500/20 text-green-400 border border-green-500/50" 
-                    : "bg-blue-electric text-black hover:shadow-[0_0_30px_rgba(0,212,255,0.4)] disabled:opacity-70"
-                }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
-                    Sending...
-                  </>
-                ) : submitted ? (
-                  "Message Sent!"
-                ) : (
-                  <>
-                    Send Message <Send size={18} />
-                  </>
-                )}
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  disabled={formState !== "idle"}
+                  className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-black text-[14px] font-medium hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                >
+                  {formState === "idle" && (
+                    <>
+                      <Send className="w-4 h-4" />
+                      Send Message
+                    </>
+                  )}
+                  {formState === "sending" && (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Sending...
+                    </>
+                  )}
+                  {formState === "sent" && (
+                    <>
+                      <CheckCircle className="w-4 h-4" />
+                      Sent!
+                    </>
+                  )}
+                </button>
+              </form>
+            </CardSpotlight>
           </motion.div>
-
         </div>
       </div>
     </section>

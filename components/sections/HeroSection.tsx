@@ -1,121 +1,168 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Typewriter from "typewriter-effect";
-import { ArrowRight, Download, Terminal } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 import { PERSONAL_INFO, ROTATING_TITLES } from "@/lib/constants";
+import { ArrowDown, Github, FileText, Mail } from "lucide-react";
 
 export function HeroSection() {
   const [titleIndex, setTitleIndex] = useState(0);
+  const [displayText, setDisplayText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTitleIndex((prev) => (prev + 1) % ROTATING_TITLES.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    const currentTitle = ROTATING_TITLES[titleIndex];
+
+    if (!isDeleting) {
+      if (displayText.length < currentTitle.length) {
+        timeoutRef.current = setTimeout(() => {
+          setDisplayText(currentTitle.slice(0, displayText.length + 1));
+        }, 60);
+      } else {
+        timeoutRef.current = setTimeout(() => setIsDeleting(true), 2200);
+      }
+    } else {
+      if (displayText.length > 0) {
+        timeoutRef.current = setTimeout(() => {
+          setDisplayText(currentTitle.slice(0, displayText.length - 1));
+        }, 35);
+      } else {
+        setIsDeleting(false);
+        setTitleIndex((prev) => (prev + 1) % ROTATING_TITLES.length);
+      }
+    }
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [displayText, isDeleting, titleIndex]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden section-wrapper">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,212,255,0.05)_0%,transparent_50%)] animate-pulse-slow"></div>
-      
-      <div className="container mx-auto px-6 z-10">
-        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-          {/* Terminal Intro */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md"
-          >
-            <Terminal size={16} className="text-blue-electric" />
-            <span className="font-mono text-sm text-white/80">
-              <Typewriter
-                options={{
-                  strings: ["System Initialized...", "Welcome to the Portfolio", "Hello World!"],
-                  autoStart: true,
-                  loop: true,
-                  delay: 50,
-                  deleteSpeed: 30,
-                }}
-              />
-            </span>
-          </motion.div>
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
+      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+        {/* Status label */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="mb-8"
+        >
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[12px] font-medium tracking-wider uppercase text-orange-300/70 bg-orange-500/[0.06] border border-orange-500/[0.1]">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-400/80 animate-pulse" />
+            Available for opportunities
+          </span>
+        </motion.div>
 
-          {/* Main Title */}
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-4"
-          >
-            <span className="text-white">{PERSONAL_INFO.firstName}</span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-electric to-purple-neon">
-              {PERSONAL_INFO.lastName}
-            </span>
-          </motion.h1>
+        {/* Name */}
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight mb-6"
+        >
+          <span className="gradient-text-subtle">{PERSONAL_INFO.firstName}</span>
+          <span className="text-white/15 ml-3 font-light">{PERSONAL_INFO.lastName}</span>
+        </motion.h1>
 
-          {/* Rotating Subtitle */}
-          <div className="h-12 md:h-16 overflow-hidden mb-8 relative flex justify-center w-full">
-            <AnimatePresence mode="wait">
-              <motion.h2
-                key={titleIndex}
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -40, opacity: 0 }}
-                transition={{ duration: 0.5, ease: "anticipate" }}
-                className="text-2xl md:text-4xl font-light text-white/70 absolute"
-              >
-                {ROTATING_TITLES[titleIndex]}
-              </motion.h2>
-            </AnimatePresence>
-          </div>
+        {/* Rotating title */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.5 }}
+          className="h-10 mb-8 flex items-center justify-center"
+        >
+          <span className="text-xl sm:text-2xl font-light text-orange-300/60">
+            {displayText}
+            <span className="inline-block w-[2px] h-6 bg-orange-400/50 ml-0.5 animate-pulse align-middle" />
+          </span>
+        </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
-            className="text-lg md:text-xl text-white/50 max-w-2xl mb-12"
-          >
-            {PERSONAL_INFO.tagline}
-          </motion.p>
+        {/* Tagline */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.6 }}
+          className="text-lg sm:text-xl text-white/35 max-w-2xl mx-auto leading-relaxed mb-12 font-light"
+        >
+          {PERSONAL_INFO.tagline}
+        </motion.p>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 md:gap-6 items-center justify-center w-full"
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.7 }}
+          className="flex flex-wrap items-center justify-center gap-4"
+        >
+          <a
+            href="#projects"
+            className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white text-black text-[14px] font-medium hover:bg-white/90 transition-all duration-300 hover:shadow-lg hover:shadow-white/10"
           >
-            <a href="#projects" className="magnetic-btn btn-primary w-full sm:w-auto">
-              View Projects
-              <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
-            </a>
-            
-            <a href="/resume.pdf" target="_blank" className="magnetic-btn btn-ghost w-full sm:w-auto">
-              <Download size={18} className="mr-2" />
-              Download Resume
-            </a>
-            
-            <a href="#contact" className="text-white/60 hover:text-white transition-colors text-sm font-medium underline underline-offset-4 decoration-white/20 hover:decoration-white w-full sm:w-auto mt-4 sm:mt-0">
-              Contact Me
-            </a>
-          </motion.div>
-        </div>
+            View Projects
+            <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+          </a>
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full text-[14px] font-medium text-white/60 bg-white/[0.04] border border-white/[0.07] hover:bg-white/[0.07] hover:text-white/80 transition-all duration-300"
+          >
+            <FileText className="w-4 h-4" />
+            Resume
+          </a>
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full text-[14px] font-medium text-white/60 bg-white/[0.04] border border-white/[0.07] hover:bg-white/[0.07] hover:text-white/80 transition-all duration-300"
+          >
+            <Mail className="w-4 h-4" />
+            Contact
+          </a>
+        </motion.div>
+
+        {/* Social links */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 1 }}
+          className="mt-16 flex items-center justify-center gap-5"
+        >
+          <a
+            href={PERSONAL_INFO.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/20 hover:text-white/50 transition-colors"
+            aria-label="GitHub"
+          >
+            <Github className="w-5 h-5" />
+          </a>
+          <a
+            href={`mailto:${PERSONAL_INFO.email}`}
+            className="text-white/20 hover:text-white/50 transition-colors"
+            aria-label="Email"
+          >
+            <Mail className="w-5 h-5" />
+          </a>
+        </motion.div>
       </div>
 
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        transition={{ delay: 1.5, duration: 1 }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2"
       >
-        <span className="text-xs uppercase tracking-[0.2em] text-white/30 font-mono">Scroll</span>
-        <div className="w-[1px] h-12 bg-gradient-to-b from-white/30 to-transparent relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1/2 bg-blue-electric animate-scan-line"></div>
-        </div>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="w-5 h-8 rounded-full border border-white/[0.08] flex items-start justify-center pt-1.5"
+        >
+          <div className="w-1 h-2 rounded-full bg-white/15" />
+        </motion.div>
       </motion.div>
     </section>
   );

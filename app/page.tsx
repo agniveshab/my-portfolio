@@ -4,16 +4,14 @@ import { useEffect, useState } from "react";
 import Lenis from "lenis";
 
 import { Navbar } from "@/components/layout/Navbar";
-import { FloatingDock } from "@/components/layout/FloatingDock";
-import { CursorSpotlight } from "@/components/effects/CursorSpotlight";
-
+import { AmbientBackground } from "@/components/effects/AmbientBackground";
+import { Component as EtheralShadow } from "@/components/ui/etheral-shadow";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { SkillsSection } from "@/components/sections/SkillsSection";
 import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { ExperienceSection } from "@/components/sections/ExperienceSection";
 import { EducationSection } from "@/components/sections/EducationSection";
-import { AIAssistantSection } from "@/components/sections/AIAssistantSection";
 import { ResumeSection } from "@/components/sections/ResumeSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { FooterSection } from "@/components/sections/FooterSection";
@@ -23,8 +21,7 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
-    
-    // Initialize smooth scrolling
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -47,19 +44,26 @@ export default function Home() {
     };
   }, []);
 
-  if (!mounted) return null; // Prevent hydration mismatch
+  if (!mounted) return null;
 
   return (
-    <main className="relative bg-[#050508] text-white selection:bg-blue-electric/30 selection:text-white min-h-screen">
-      {/* Global Effects */}
-      <CursorSpotlight />
-      <div className="animated-bg"></div>
-      <div className="grid-overlay"></div>
-      <div className="noise-overlay"></div>
+    <main className="relative bg-[#09090b] text-white selection:bg-orange-500/15 selection:text-white min-h-screen">
+      {/* Etheral Shadow — fixed animated background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <EtheralShadow
+          color="rgba(180, 60, 20, 0.35)"
+          animation={{ scale: 60, speed: 40 }}
+          noise={{ opacity: 0.6, scale: 1.2 }}
+          sizing="fill"
+        />
+      </div>
+
+      {/* Warm ambient gradient orbs with scroll parallax */}
+      <AmbientBackground />
+      <div className="noise-overlay" />
 
       {/* Navigation */}
       <Navbar />
-      <FloatingDock />
 
       {/* Sections */}
       <HeroSection />
@@ -68,10 +72,8 @@ export default function Home() {
       <ProjectsSection />
       <ExperienceSection />
       <EducationSection />
-      <AIAssistantSection />
       <ResumeSection />
       <ContactSection />
-      
       <FooterSection />
     </main>
   );

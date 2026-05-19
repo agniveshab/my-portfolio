@@ -1,25 +1,25 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
-  weight: ["300", "400", "500", "700"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "AGNIVESH AB — Full Stack Developer & AI Engineer",
   description:
-    "Personal portfolio of AGNIVESH AB — Computer Science student, Full Stack Developer, AI/ML Engineer, Flutter Developer, and builder of practical AI systems. Based in India.",
+    "Portfolio of AGNIVESH AB — Computer Science student, Full Stack Developer, AI/ML Engineer, and builder of practical AI systems.",
   keywords: [
     "AGNIVESH AB",
     "Full Stack Developer",
@@ -39,13 +39,13 @@ export const metadata: Metadata = {
     locale: "en_IN",
     title: "AGNIVESH AB — Full Stack Developer & AI Engineer",
     description:
-      "Next-generation portfolio of AGNIVESH AB — building systems for the future.",
-    siteName: "AGNIVESH AB Portfolio",
+      "Building thoughtful software that solves real problems.",
+    siteName: "AGNIVESH AB",
   },
   twitter: {
     card: "summary_large_image",
     title: "AGNIVESH AB — Full Stack Developer & AI Engineer",
-    description: "Building systems for the future.",
+    description: "Building thoughtful software that solves real problems.",
   },
   robots: {
     index: true,
@@ -62,10 +62,10 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#050508" />
+        <meta name="theme-color" content="#09090b" />
       </head>
       <body
-        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
       >
         {children}
